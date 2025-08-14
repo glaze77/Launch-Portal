@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>40167002 Training Portal</title>
+  <style>
+    :root{
+      --bg:#0b0b0f;
+      --text:#f5f7fb;
+      --muted:#c7cbd6;
+      --accent:#77baff;
+      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,.45);
+      --speed:220ms;
+      --glow: 0 12px 28px rgba(119,186,255,.24), 0 2px 8px rgba(119,186,255,.25);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, #173046 0%, transparent 60%),
+        radial-gradient(900px 500px at 110% 0%, #321d3d 0%, transparent 55%),
+        var(--bg);
+      font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      display:flex; flex-direction:column; min-height:100%;
+      position:relative; overflow-x:hidden;
+    }
+    body::before{
+      content:"";
+      position:fixed; inset:-20%;
+      pointer-events:none;
+      background:
+        radial-gradient(900px 500px at 15% 10%, rgba(119,186,255,.06), transparent 60%),
+        radial-gradient(800px 450px at 85% 20%, rgba(199,119,255,.05), transparent 60%);
+      filter: blur(14px);
+      animation:bgFloat 28s ease-in-out infinite alternate;
+      z-index:0;
+    }
+    @keyframes bgFloat{
+      0%{ transform:translate3d(0,0,0) scale(1); opacity:.9;}
+      100%{ transform:translate3d(-2%,2%,0) scale(1.03); opacity:1;}
+    }
+
+    header{ text-align:center; padding:48px 20px 20px; position:relative; z-index:1; }
+    header h1{ margin:0 0 6px; font-size:clamp(28px,3.6vw,42px); letter-spacing:.3px; }
+    header p{ margin:0; color:var(--muted); font-size:clamp(14px,1.6vw,18px); }
+
+    .grid{
+      width:min(1200px,94vw);
+      margin:28px auto 64px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:24px;
+      position:relative; z-index:1;
+    }
+
+    /* Slower, more dramatic entrance with separate slide + fade */
+    .item{
+      --stagger: 600ms;
+      display:flex; flex-direction:column; min-width:0;
+      opacity:0;
+      transform:translateY(12px);
+      animation:
+        cardSlide 1000ms cubic-bezier(.22,.61,.36,1) var(--stagger) forwards,
+        cardFade  1800ms ease                      var(--stagger) forwards;
+    }
+    .item:nth-child(1){ --stagger: 600ms; }
+    .item:nth-child(2){ --stagger: 1200ms; }
+    .item:nth-child(3){ --stagger: 1800ms; }
+    .item:nth-child(4){ --stagger: 2400ms; }
+
+    @keyframes cardSlide{
+      from{ transform:translateY(12px) scale(.995); }
+      70% { transform:translateY(0)    scale(1); }
+      to  { transform:translateY(0)    scale(1); }
+    }
+    @keyframes cardFade{
+      from{ opacity:0; }
+      to  { opacity:1; }
+    }
+
+    .card{
+      background:linear-gradient(180deg,#141826,#0d1018);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+      isolation:isolate;
+      outline:none;
+      transition: transform var(--speed) ease, box-shadow var(--speed) ease, filter var(--speed) ease;
+      will-change: transform;
+    }
+    .card:focus-visible{
+      box-shadow:0 0 0 3px #fff3, 0 0 0 6px var(--accent), var(--shadow);
+    }
+    .media{ aspect-ratio:16/9; width:100%; overflow:hidden; }
+    .card img{
+      width:100%; height:100%; object-fit:cover; display:block;
+      transform:scale(1.0); transform-origin:center;
+      transition:transform var(--speed) ease, filter var(--speed) ease;
+      filter:saturate(.92) contrast(1.02) brightness(.95);
+    }
+
+    .info{ padding:16px 18px 18px; }
+    .title{ margin:0; font-weight:650; font-size:18px; letter-spacing:.2px; position:relative; }
+    .item:hover .title::after{
+      content:""; position:absolute; left:0; right:auto; bottom:-6px; height:2px;
+      background:linear-gradient(90deg, var(--accent), transparent);
+      width:100%; transform-origin:left; transform:scaleX(1);
+      opacity:.85;
+    }
+    .badge{
+      display:inline-block;
+      padding:2px 8px; margin-top:6px;
+      font-size:12px; letter-spacing:.2px;
+      color:#cfe6ff; background:#13324b; border:1px solid #2a5a86;
+      border-radius:999px;
+    }
+
+    .overlay{ position:absolute; inset:0; pointer-events:none; }
+    .overlay::before{
+      content:""; position:absolute; inset:0; border-radius:var(--radius);
+      background:linear-gradient(180deg,rgba(0,0,0,0) 55%, rgba(0,0,0,.18) 100%);
+      opacity:0; transition:opacity var(--speed) ease;
+    }
+
+    .item:hover .card img{
+      transform:scale(1.04) translateZ(0);
+      filter:brightness(.9) saturate(1.05) contrast(1.06);
+    }
+    .item:hover .overlay::before{ opacity:1; }
+    .item:hover .card{
+      transform:translateY(-4px);
+      filter:drop-shadow(0 8px 20px rgba(0,0,0,.35));
+      box-shadow:var(--shadow), var(--glow);
+    }
+
+    /* Expanding description BELOW the card (hover-only) */
+    .desc{
+      color:#e9edf6;
+      background:linear-gradient(180deg,#0e1119,#0a0d14);
+      border-radius:12px;
+      border:1px solid #ffffff14;
+      padding:0 14px;
+      margin-top:0;
+      max-height:0;
+      overflow:hidden;
+      opacity:0;
+      transition:
+        max-height var(--speed) ease,
+        opacity var(--speed) ease,
+        margin-top var(--speed) ease,
+        padding var(--speed) ease;
+    }
+    .item:hover .desc{
+      padding:12px 14px 14px;
+      margin-top:10px;
+      max-height:300px;              /* a bit taller to fit the badge */
+      opacity:1;
+    }
+    /* Add small gap between main text and the audio badge */
+    .desc p{ margin:0 0 8px; font-size:15px; line-height:1.45; }
+    .desc p:last-child{ margin-bottom:0; }
+
+    .card a.stretched{
+      position:absolute; inset:0; z-index:2;
+      text-indent:-9999px; overflow:hidden; white-space:nowrap; outline:none;
+    }
+
+    footer{ margin:auto 0 24px; text-align:center; color:#aab3c2; font-size:13px; position:relative; z-index:1; }
+
+    /* === Audio alert styling === */
+    .audio-alert{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#241a00;
+      border:1px solid #ffcf66;
+      color:#ffcf66;
+      font-weight:700;
+      font-size:13px;
+      letter-spacing:.2px;
+      animation:alertPulse 1.8s ease-in-out infinite;
+    }
+    .audio-alert .icon{ width:14px; height:14px; line-height:0; display:inline-block; }
+    @keyframes alertPulse{
+      0%   { box-shadow:0 0 0 0 rgba(255,207,102,.35); }
+      70%  { box-shadow:0 0 0 10px rgba(255,207,102,0); }
+      100% { box-shadow:0 0 0 0 rgba(255,207,102,0); }
+    }
+    @media (prefers-contrast: more){
+      .audio-alert{ background:#000; color:#ffd166; border-color:#ffd166; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      body::before{ animation:none !important; }
+      .item{ animation:none !important; opacity:1; transform:none; }
+      .card, .card img, .desc{ transition:none !important; }
+      .audio-alert{ animation:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Kohler First Generation Training Portal</h1>
+    <p>Select a module to launch.</p>
+  </header>
+
+  <main class="grid">
+    <!-- 1) RelayReady -->
+    <section class="item">
+      <article class="card">
+        <div class="media">
+          <img src="relayready.jpg" alt="RelayReady schematic preview" loading="lazy" decoding="async">
+        </div>
+        <div class="overlay"></div>
+        <div class="info">
+          <h2 class="title">RelayReady</h2>
+          <span class="badge">v1.2.1</span>
+        </div>
+        <a class="stretched" href="https://relayready.atss.work" aria-label="Open RelayReady website">Open</a>
+      </article>
+      <div class="desc">
+        <p>· Power Supplies and Electromechanical Relay Basics.</p>
+        <p class="audio-alert">
+          <span class="icon" aria-hidden="true">🔊</span>
+          <span>This module includes audio — ensure your sound is on.</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- 2) ATS Interactive -->
+    <section class="item">
+      <article class="card">
+        <div class="media">
+          <img src="ats-interactive.jpg" alt="ATS Interactive panel preview" loading="lazy" decoding="async">
+        </div>
+        <div class="overlay"></div>
+        <div class="info">
+          <h2 class="title">ATS Interactive</h2>
+          <span class="badge">v2.1.7</span>
+        </div>
+        <a class="stretched" href="https://962.atss.work" aria-label="Open ATS Interactive website">Open</a>
+      </article>
+      <div class="desc"><p>· Explore ASCO 962 Bypass and Isolation handle operations.</p></div>
+    </section>
+
+    <!-- 3) 962 CircuitFlow -->
+    <section class="item">
+      <article class="card">
+        <div class="media">
+          <img src="962-circuitflow.jpg" alt="962 CircuitFlow schematic preview" loading="lazy" decoding="async">
+        </div>
+        <div class="overlay"></div>
+        <div class="info">
+          <h2 class="title">962 CircuitFlow</h2>
+          <span class="badge">v1.5.8</span>
+        </div>
+        <a class="stretched" href="https://962cf.atss.work" aria-label="Open 962 CircuitFlow website">Open</a>
+      </article>
+      <div class="desc">
+        <p>· Visualize commercial, emergency, and control circuits for the ASCO 962 Schematic.</p>
+        <p class="audio-alert">
+          <span class="icon" aria-hidden="true">🔊</span>
+          <span>This module includes audio — ensure your sound is on.</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- 4) Lab View -->
+    <section class="item">
+      <article class="card">
+        <div class="media">
+          <img src="kohler-virtual-lab.jpg" alt="Kohler First Generation Virtual Lab preview" loading="lazy" decoding="async">
+        </div>
+        <div class="overlay"></div>
+        <div class="info">
+          <h2 class="title">Lab View</h2>
+          <span class="badge">v1.2.8</span>
+        </div>
+        <a class="stretched" href="https://lab.atss.work" aria-label="Open Lab View website">Open</a>
+      </article>
+      <div class="desc"><p>· Interactive virtual lab tour.</p></div>
+    </section>
+  </main>
+
+  <footer>© {year} Training Portal</footer>
+
+  <script>
+    document.querySelector('footer').textContent = `© ${new Date().getFullYear()} Training Portal`;
+
+    document.querySelectorAll('.card a.stretched').forEach(link => {
+      link.setAttribute('target', '_blank');
+      link.setAttribute('rel', 'noopener noreferrer');
+      link.addEventListener('click', () => { link.blur(); });
+    });
+  </script>
+</body>
+</html>
