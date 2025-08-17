@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>40167002 Training Portal</title>
+  <title>Kohler First Generation Training Portal</title>
   <style>
     :root{
       --bg:#0b0b0f;
@@ -57,7 +57,7 @@
       position:relative; z-index:1;
     }
 
-    /* Slower, more dramatic entrance with separate slide + fade */
+    /* entrance */
     .item{
       --stagger: 600ms;
       display:flex; flex-direction:column; min-width:0;
@@ -71,16 +71,8 @@
     .item:nth-child(2){ --stagger: 1200ms; }
     .item:nth-child(3){ --stagger: 1800ms; }
     .item:nth-child(4){ --stagger: 2400ms; }
-
-    @keyframes cardSlide{
-      from{ transform:translateY(12px) scale(.995); }
-      70% { transform:translateY(0)    scale(1); }
-      to  { transform:translateY(0)    scale(1); }
-    }
-    @keyframes cardFade{
-      from{ opacity:0; }
-      to  { opacity:1; }
-    }
+    @keyframes cardSlide{ from{ transform:translateY(12px) scale(.995);} 70%,to{ transform:translateY(0) scale(1);} }
+    @keyframes cardFade{ from{opacity:0} to{opacity:1} }
 
     .card{
       background:linear-gradient(180deg,#141826,#0d1018);
@@ -88,18 +80,14 @@
       box-shadow:var(--shadow);
       overflow:hidden;
       position:relative;
-      isolation:isolate;
       outline:none;
       transition: transform var(--speed) ease, box-shadow var(--speed) ease, filter var(--speed) ease;
       will-change: transform;
     }
-    .card:focus-visible{
-      box-shadow:0 0 0 3px #fff3, 0 0 0 6px var(--accent), var(--shadow);
-    }
     .media{ aspect-ratio:16/9; width:100%; overflow:hidden; }
     .card img{
       width:100%; height:100%; object-fit:cover; display:block;
-      transform:scale(1.0); transform-origin:center;
+      transform:scale(1.0);
       transition:transform var(--speed) ease, filter var(--speed) ease;
       filter:saturate(.92) contrast(1.02) brightness(.95);
     }
@@ -107,14 +95,12 @@
     .info{ padding:16px 18px 18px; }
     .title{ margin:0; font-weight:650; font-size:18px; letter-spacing:.2px; position:relative; }
     .item:hover .title::after{
-      content:""; position:absolute; left:0; right:auto; bottom:-6px; height:2px;
+      content:""; position:absolute; left:0; bottom:-6px; height:2px;
       background:linear-gradient(90deg, var(--accent), transparent);
-      width:100%; transform-origin:left; transform:scaleX(1);
-      opacity:.85;
+      width:100%; opacity:.85;
     }
     .badge{
-      display:inline-block;
-      padding:2px 8px; margin-top:6px;
+      display:inline-block; padding:2px 8px; margin-top:6px;
       font-size:12px; letter-spacing:.2px;
       color:#cfe6ff; background:#13324b; border:1px solid #2a5a86;
       border-radius:999px;
@@ -127,10 +113,7 @@
       opacity:0; transition:opacity var(--speed) ease;
     }
 
-    .item:hover .card img{
-      transform:scale(1.04) translateZ(0);
-      filter:brightness(.9) saturate(1.05) contrast(1.06);
-    }
+    .item:hover .card img{ transform:scale(1.04); filter:brightness(.9) saturate(1.05) contrast(1.06); }
     .item:hover .overlay::before{ opacity:1; }
     .item:hover .card{
       transform:translateY(-4px);
@@ -138,7 +121,7 @@
       box-shadow:var(--shadow), var(--glow);
     }
 
-    /* Expanding description BELOW the card (hover-only) */
+    /* expanding description */
     .desc{
       color:#e9edf6;
       background:linear-gradient(180deg,#0e1119,#0a0d14);
@@ -149,53 +132,39 @@
       max-height:0;
       overflow:hidden;
       opacity:0;
-      transition:
-        max-height var(--speed) ease,
-        opacity var(--speed) ease,
-        margin-top var(--speed) ease,
-        padding var(--speed) ease;
+      transition:max-height var(--speed) ease, opacity var(--speed) ease, margin-top var(--speed) ease, padding var(--speed) ease;
     }
     .item:hover .desc{
       padding:12px 14px 14px;
       margin-top:10px;
-      max-height:300px;              /* a bit taller to fit the badge */
+      max-height:300px;
       opacity:1;
     }
-    /* Add small gap between main text and the audio badge */
     .desc p{ margin:0 0 8px; font-size:15px; line-height:1.45; }
     .desc p:last-child{ margin-bottom:0; }
 
-    .card a.stretched{
+    /* audio alert badge */
+    .audio-alert{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border-radius:999px;
+      background:#241a00; border:1px solid #ffcf66; color:#ffcf66;
+      font-weight:700; font-size:13px; letter-spacing:.2px;
+      animation:alertPulse 1.8s ease-in-out infinite;
+    }
+    .audio-alert .icon{ width:14px; height:14px; line-height:0; display:inline-block; }
+    @keyframes alertPulse{
+      0%{ box-shadow:0 0 0 0 rgba(255,207,102,.35); }
+      70%{ box-shadow:0 0 0 10px rgba(255,207,102,0); }
+      100%{ box-shadow:0 0 0 0 rgba(255,207,102,0); }
+    }
+
+    /* link cover */
+    .stretched{
       position:absolute; inset:0; z-index:2;
       text-indent:-9999px; overflow:hidden; white-space:nowrap; outline:none;
     }
 
     footer{ margin:auto 0 24px; text-align:center; color:#aab3c2; font-size:13px; position:relative; z-index:1; }
-
-    /* === Audio alert styling === */
-    .audio-alert{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:6px 10px;
-      border-radius:999px;
-      background:#241a00;
-      border:1px solid #ffcf66;
-      color:#ffcf66;
-      font-weight:700;
-      font-size:13px;
-      letter-spacing:.2px;
-      animation:alertPulse 1.8s ease-in-out infinite;
-    }
-    .audio-alert .icon{ width:14px; height:14px; line-height:0; display:inline-block; }
-    @keyframes alertPulse{
-      0%   { box-shadow:0 0 0 0 rgba(255,207,102,.35); }
-      70%  { box-shadow:0 0 0 10px rgba(255,207,102,0); }
-      100% { box-shadow:0 0 0 0 rgba(255,207,102,0); }
-    }
-    @media (prefers-contrast: more){
-      .audio-alert{ background:#000; color:#ffd166; border-color:#ffd166; }
-    }
 
     @media (prefers-reduced-motion: reduce){
       body::before{ animation:none !important; }
@@ -212,21 +181,25 @@
   </header>
 
   <main class="grid">
-    <!-- 1) RelayReady -->
+    <!-- RelayReady -->
     <section class="item">
       <article class="card">
         <div class="media">
-          <img src="relayready.jpg" alt="RelayReady schematic preview" loading="lazy" decoding="async">
+          <img
+            src="relayready.jpg"
+            data-gif="relay.gif"
+            alt="RelayReady schematic preview"
+            loading="lazy" decoding="async">
         </div>
         <div class="overlay"></div>
         <div class="info">
           <h2 class="title">RelayReady</h2>
           <span class="badge">v1.2.1</span>
         </div>
-        <a class="stretched" href="https://relayready.atss.work" aria-label="Open RelayReady website">Open</a>
+        <a class="stretched" href="https://relayready.atss.work" aria-label="Open RelayReady" target="_blank" rel="noopener noreferrer">Open</a>
       </article>
       <div class="desc">
-        <p>· Power Supplies and Electromechanical Relay Basics.</p>
+        <p>· Power supplies and electromechanical relay basics.</p>
         <p class="audio-alert">
           <span class="icon" aria-hidden="true">🔊</span>
           <span>This module includes audio — ensure your sound is on.</span>
@@ -234,37 +207,45 @@
       </div>
     </section>
 
-    <!-- 2) ATS Interactive -->
+    <!-- ATS Interactive -->
     <section class="item">
       <article class="card">
         <div class="media">
-          <img src="ats-interactive.jpg" alt="ATS Interactive panel preview" loading="lazy" decoding="async">
+          <img
+            src="ats-interactive.jpg"
+            data-gif="ats.gif"
+            alt="ATS Interactive panel preview"
+            loading="lazy" decoding="async">
         </div>
         <div class="overlay"></div>
         <div class="info">
           <h2 class="title">ATS Interactive</h2>
           <span class="badge">v2.1.7</span>
         </div>
-        <a class="stretched" href="https://962.atss.work" aria-label="Open ATS Interactive website">Open</a>
+        <a class="stretched" href="https://962.atss.work" aria-label="Open ATS Interactive" target="_blank" rel="noopener noreferrer">Open</a>
       </article>
       <div class="desc"><p>· Explore ASCO 962 Bypass and Isolation handle operations.</p></div>
     </section>
 
-    <!-- 3) 962 CircuitFlow -->
+    <!-- 962 CircuitFlow -->
     <section class="item">
       <article class="card">
         <div class="media">
-          <img src="962-circuitflow.jpg" alt="962 CircuitFlow schematic preview" loading="lazy" decoding="async">
+          <img
+            src="962-circuitflow.jpg"
+            data-gif="962.gif"
+            alt="962 CircuitFlow schematic preview"
+            loading="lazy" decoding="async">
         </div>
         <div class="overlay"></div>
         <div class="info">
           <h2 class="title">962 CircuitFlow</h2>
           <span class="badge">v1.5.8</span>
         </div>
-        <a class="stretched" href="https://962cf.atss.work" aria-label="Open 962 CircuitFlow website">Open</a>
+        <a class="stretched" href="https://962cf.atss.work" aria-label="Open 962 CircuitFlow" target="_blank" rel="noopener noreferrer">Open</a>
       </article>
       <div class="desc">
-        <p>· Visualize commercial, emergency, and control circuits for the ASCO 962 Schematic.</p>
+        <p>· Visualize commercial, emergency, and control circuits for the ASCO 962 schematic.</p>
         <p class="audio-alert">
           <span class="icon" aria-hidden="true">🔊</span>
           <span>This module includes audio — ensure your sound is on.</span>
@@ -272,18 +253,22 @@
       </div>
     </section>
 
-    <!-- 4) Lab View -->
+    <!-- Lab View -->
     <section class="item">
       <article class="card">
         <div class="media">
-          <img src="kohler-virtual-lab.jpg" alt="Kohler First Generation Virtual Lab preview" loading="lazy" decoding="async">
+          <img
+            src="kohler-virtual-lab.jpg"
+            data-gif="virtual.gif"
+            alt="Kohler First Generation Virtual Lab preview"
+            loading="lazy" decoding="async">
         </div>
         <div class="overlay"></div>
         <div class="info">
           <h2 class="title">Lab View</h2>
           <span class="badge">v1.2.8</span>
         </div>
-        <a class="stretched" href="https://lab.atss.work" aria-label="Open Lab View website">Open</a>
+        <a class="stretched" href="https://lab.atss.work" aria-label="Open Lab View" target="_blank" rel="noopener noreferrer">Open</a>
       </article>
       <div class="desc"><p>· Interactive virtual lab tour.</p></div>
     </section>
@@ -291,14 +276,46 @@
 
   <footer>© {year} Training Portal</footer>
 
-  <script>
-    document.querySelector('footer').textContent = `© ${new Date().getFullYear()} Training Portal`;
+<script>
+  // current year
+  document.querySelector('footer').textContent =
+    `© ${new Date().getFullYear()} Training Portal`;
 
-    document.querySelectorAll('.card a.stretched').forEach(link => {
-      link.setAttribute('target', '_blank');
-      link.setAttribute('rel', 'noopener noreferrer');
-      link.addEventListener('click', () => { link.blur(); });
-    });
-  </script>
+  // JPG ↔ GIF swap: listen on the CARD so the stretched link doesn't block it
+  document.querySelectorAll('.card').forEach(card => {
+    const img = card.querySelector('.media img');
+    if (!img) return;
+
+    const still = img.getAttribute('src');
+    const gif   = img.getAttribute('data-gif');
+    if (!gif) return;
+
+    // Preload the GIF so it appears instantly
+    const pre = new Image();
+    pre.src = gif;
+
+    const toGif  = () => { img.src = gif; };
+    const toJpg  = () => { img.src = still; };
+
+    // Mouse / pointer
+    card.addEventListener('mouseenter', toGif);
+    card.addEventListener('mouseleave', toJpg);
+
+    // Keyboard focus (accessibility)
+    card.addEventListener('focusin', toGif);
+    card.addEventListener('focusout', toJpg);
+
+    // Optional: on touch devices, tap previews GIF, second tap follows link
+    card.addEventListener('touchstart', (e) => {
+      if (img.src.endsWith(still)) {
+        e.preventDefault(); // prevent immediate navigation on first tap
+        toGif();
+        // revert after a moment so the link can be tapped again
+        setTimeout(toJpg, 2500);
+      }
+    }, { passive: false });
+  });
+</script>
+
 </body>
 </html>
